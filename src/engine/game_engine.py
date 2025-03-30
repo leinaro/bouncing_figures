@@ -1,24 +1,27 @@
 import esper
 import pygame
 
+from src.ecs.components.c_enemy_spawner import CEnemySpawner
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
-from src.ecs.create.prefab_creator import create_cuadrado, create_window
+from src.ecs.json.json_interpreter import read_enemies, read_level, read_window
+from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
 from src.ecs.systems.s_screen_bounce import system_screen_bounce
 
 
 class GameEngine:
+    screen_config = read_window()
+    enemy_config = read_enemies()
+    level_config = read_level()
+
+
     def __init__(self) -> None:
         pygame.init()
-
-        self.screen = pygame.display.set_mode((640, 360), pygame.SCALED)
-        self.clock = pygame.time.Clock()
-        self.is_running = False
-        self.frame_rate = 60
-        self.delta_time = 0
+        
+        self._setup_screen()
 
         self.ecs_world = esper.World()
 
@@ -33,13 +36,13 @@ class GameEngine:
         self._clean()
 
     def _create(self):
-        create_cuadrado(
-            self.ecs_world,
-            pygame.Vector2(100, 100),
-            pygame.Vector2(50, 50),
-            pygame.Color(255, 0, 0),
-            pygame.Vector2(200, 200)
+        spawner_entity = self.ecs_world.create_entity()
+        enemy_spawn_events = self.level_config['enemy_spawn_events']
+        self.ecs_world.add_component(
+            spawner_entity,
+            CEnemySpawner(enemy_spawn_events)
         )
+
 
     def _calculate_time(self):
         self.clock.tick(self.frame_rate)
@@ -56,15 +59,32 @@ class GameEngine:
     def _update(self):
         system_movement(self.ecs_world, self.delta_time)        
         system_screen_bounce(self.ecs_world, self.screen)
+        system_enemy_spawner(self.ecs_world, self.delta_time, self.enemy_config)
+        pass
 
        
     def _draw(self):
-        self.screen.fill((0, 200, 128))
+        self.screen.fill(
+            (self.screen_config["bg_color"]["r"],
+            self.screen_config["bg_color"]["g"],
+            self.screen_config["bg_color"]["b"])
+        )
 
         system_rendering(self.ecs_world, self.screen)
-
         
         pygame.display.flip()
 
     def _clean(self):
         pygame.quit()
+
+    def _setup_screen(self):
+        w = self.screen_config["size"]["w"]
+        h = self.screen_config["size"]["h"]
+        title = self.screen_config["title"]
+
+        self.screen = pygame.display.set_mode((w, h), pygame.SCALED)
+        pygame.display.set_caption(title)
+        self.clock = pygame.time.Clock()
+        self.is_running = False
+        self.frame_rate = self.screen_config.get("framerate", 60)
+        self.delta_time = 0

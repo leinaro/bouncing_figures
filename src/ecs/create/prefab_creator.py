@@ -1,6 +1,7 @@
 import esper
 import pygame
 
+from src.ecs.components.c_enemy_spawner import CEnemySpawner
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
@@ -29,14 +30,3 @@ def create_cuadrado(
         CVelocity(velocity)
     )
     return cuad_entity    
-
-
-def create_enemy():
-    pass
-
-def create_window(self):
-    data = read_window()
-
-    self.screen = pygame.display.set_mode((data['size']['w'], data['size']['h']), pygame.SCALED)
-
-    pygame.display.set_caption(data['title'])
