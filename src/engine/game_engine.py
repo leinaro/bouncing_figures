@@ -5,6 +5,7 @@ from src.ecs.components.c_enemy_spawner import CEnemySpawner
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
+from src.ecs.create.prefab_creator import create_spawner
 from src.ecs.json.json_interpreter import read_enemies, read_level, read_window
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_movement import system_movement
@@ -36,12 +37,8 @@ class GameEngine:
         self._clean()
 
     def _create(self):
-        spawner_entity = self.ecs_world.create_entity()
         enemy_spawn_events = self.level_config['enemy_spawn_events']
-        self.ecs_world.add_component(
-            spawner_entity,
-            CEnemySpawner(enemy_spawn_events)
-        )
+        create_spawner(self.ecs_world, enemy_spawn_events)
 
 
     def _calculate_time(self):

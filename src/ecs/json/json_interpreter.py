@@ -3,13 +3,8 @@ import json
 
 def read_window():
     # Open and read the JSON file
-    with open('src/ecs/json/configuracion/window.json', 'r') as file:
+    with open('assets/cfg/window.json', 'r') as file:
         data = json.load(file)
-        title = data['title']
-        size = data['size']
-        bg_color = data['bg_color']
-        frame_rate = data['framerate']
-
 
     # Print the data
     print(data)
@@ -18,7 +13,7 @@ def read_window():
 
 def read_enemies():
     # Open and read the JSON file
-    with open('src/ecs/json/configuracion/enemies.json', 'r') as file:
+    with open('assets/cfg/enemies.json', 'r') as file:
         data = json.load(file)
 
     # Print the data
@@ -28,7 +23,7 @@ def read_enemies():
 
 def read_level():
     # Open and read the JSON file
-    with open('src/ecs/json/configuracion/level_01.json', 'r') as file:
+    with open('assets/cfg/level_01.json', 'r') as file:
         data = json.load(file)
 
     # Print the data

@@ -5,7 +5,18 @@ from src.ecs.components.c_enemy_spawner import CEnemySpawner
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
-from src.ecs.json.json_interpreter import read_window
+
+
+def create_spawner(
+        ecs_world: esper.World,
+        enemy_spawn_events: list
+) -> int:
+    spawner_entity = ecs_world.create_entity()
+    ecs_world.add_component(
+        spawner_entity,
+        CEnemySpawner(enemy_spawn_events)
+    )
+    return spawner_entity
 
 def create_cuadrado(
     ecs_world: esper.World, 
