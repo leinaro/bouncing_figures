@@ -4,12 +4,13 @@ import pygame
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
+from src.ecs.components.tags.c_tag_enemy import CTagEnemy
 
 def system_screen_bounce(world: esper.World, screen: pygame.Surface) -> None:
     screen_rect = screen.get_rect()
-    components = world.get_components(CTransform, CVelocity, CSurface)
+    components = world.get_components(CTransform, CVelocity, CSurface, CTagEnemy)
     
-    for entity, (transform, velocity, surface) in components:
+    for entity, (transform, velocity, surface, tag_enemy) in components:
         cuad_rect = surface.surf.get_rect(topleft=transform.pos)
 
         if cuad_rect.left < 0 or cuad_rect.right > screen_rect.width:
